@@ -21,13 +21,13 @@ jobs:
       
       # Make cache dir
       - name: Ensure R cache directory exists
-        run: mkdir -p ~/.cache/R
+        run: mkdir -p ${{ env.R_LIBS_USER }}
         
       # Restore cache
       - name: Restore R package cache
         uses: actions/cache@v4
         with:
-          path: ~/.cache/R
+          path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-packages-${{ hashFiles('DESCRIPTION') }}
           restore-keys: |
             ${{ runner.os }}-r-packages-
@@ -46,7 +46,7 @@ jobs:
       - name: Save R package cache
         uses: actions/cache@v4
         with:
-          path: ~/.cache/R
+          path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-packages-${{ hashFiles('DESCRIPTION') }}
 
       # Render book
