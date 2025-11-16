@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # 1. Checkout repository
+      # Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Set up R + Pandoc
+      # Set up R + Pandoc
       - uses: r-lib/actions/setup-r@v2
       - uses: r-lib/actions/setup-pandoc@v2
 
-      # 3. Restore cache **before** installing packages
+      # Restore cache
       - name: Restore R package cache
         uses: actions/cache@v4
         with:
@@ -28,29 +28,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-r-packages-
 
-      # 4. Install remotes (cached after first run)
+      # Install remotes
       - name: Install remotes
         run: |
           Rscript -e 'install.packages("remotes")'
 
-      # 5. Install dependencies from DESCRIPTION
+      # Install dependencies from DESCRIPTION
       - name: Install dependencies
         run: |
           Rscript -e 'remotes::install_deps(dependencies = TRUE)'
-
-      # 6. Render book
-      - name: Render book
-        run: |
-          Rscript -e 'bookdown::render_book("index.Rmd")'
-
-      # 7. Save cache (now includes remotes + all deps)
+          
+       # Save cache
       - name: Save R package cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/R
           key: ${{ runner.os }}-r-packages-${{ hashFiles('DESCRIPTION') }}
 
-      # 8. Upload output artifact
+      # Render book
+      - name: Render book
+        run: |
+          Rscript -e 'bookdown::render_book("index.Rmd")'
+
+      # Upload output artifact
       - name: Upload rendered book
         uses: actions/upload-artifact@v4
         with:
