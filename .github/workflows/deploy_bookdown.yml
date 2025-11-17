@@ -16,15 +16,14 @@ jobs:
         uses: actions/checkout@v4
 
       # Set up R + Pandoc
-      - uses: r-lib/actions/setup-r@v2
-      - uses: r-lib/actions/setup-pandoc@v2
-      
-      # Make cache dir
-      - name: Ensure R cache directory exists
-        run: mkdir -p ${{ env.R_LIBS_USER }}
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Setup Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
         
-      # Restore cache
-      - name: Restore R package cache
+      # Cache
+      - name: Cache R packages 
         uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
@@ -41,13 +40,6 @@ jobs:
       - name: Install dependencies
         run: |
           Rscript -e 'remotes::install_deps(dependencies = TRUE)'
-          
-       # Save cache
-      - name: Save R package cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-packages-${{ hashFiles('DESCRIPTION') }}
 
       # Render book
       - name: Render book
